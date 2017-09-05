@@ -15,4 +15,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'school-itech'
+rootProject.name = 'ae-09-mvc'
