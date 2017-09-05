@@ -38,6 +38,7 @@ public class MicrowaveView extends JFrame {
         this.setTitle("Microwave");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
+        this.setMinimumSize(new Dimension(250, 300));
     }
 
     private void initComponents() {
@@ -63,24 +64,26 @@ public class MicrowaveView extends JFrame {
         this.lampButton.setBorderPainted(false);
 
         this.doorButton = new JButton();
-        this.doorButton.setIcon(new ImageIcon("closed.gif"));
+        this.doorButton.setText("Open Door");
+        this.doorButton.setOpaque(true);
+        this.doorButton.setBorderPainted(false);
 
         this.add(this.buildMicrowavePanel());
     }
 
     private Component buildMicrowavePanel() {
 
-        this.subPanel = new JPanel(new GridLayout(5, 1));
-        this.mainPanel = new JPanel(new GridLayout(2, 1));
+        this.subPanel = new JPanel(new GridLayout(6, 1));
+        this.mainPanel = new JPanel(new GridLayout(1, 1));
 
         this.subPanel.add(this.timerFormattedTextField);
         this.subPanel.add(this.infoTextPane);
         this.subPanel.add(this.startButton);
         this.subPanel.add(this.tubeButton);
         this.subPanel.add(this.lampButton);
+        this.subPanel.add(this.doorButton);
 
         this.mainPanel.add(this.subPanel);
-        this.mainPanel.add(this.doorButton);
 
         this.timerFormattedTextField.addActionListener(this.microwaveController);
         this.startButton.addActionListener(this.microwaveController);
