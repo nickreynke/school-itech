@@ -132,23 +132,6 @@ public class MicrowaveController implements ActionListener {
         this.startMicrowaveTimer();
     }
 
-    protected void startMicrowaveTimer() {
-        this.microwaveTimer.start();
-    }
-
-    protected void stopMicrowaveTimer() {
-        this.microwaveTimer.stop();
-    }
-
-    protected void startMicrowaveInfoTimer() {
-        this.microwaveInfoTimer.start();
-    }
-
-    protected void stopMicrowaveInfoTimer() {
-        this.microwaveInfoTimer.stop();
-        this.resetCurrentTimeLeft();
-    }
-
     public void openDoor() {
 
         this.info("Door is opening ...");
@@ -175,6 +158,23 @@ public class MicrowaveController implements ActionListener {
         this.microwaveView.getDoorButton().setText("Open Door");
 
         this.info("Door closed.");
+    }
+
+    protected void startMicrowaveTimer() {
+        this.microwaveTimer.start();
+    }
+
+    protected void stopMicrowaveTimer() {
+        this.microwaveTimer.stop();
+    }
+
+    protected void startMicrowaveInfoTimer() {
+        this.microwaveInfoTimer.start();
+    }
+
+    protected void stopMicrowaveInfoTimer() {
+        this.microwaveInfoTimer.stop();
+        this.resetCurrentTimeLeft();
     }
 
     protected void lowerCurrentTimeLeft() {
