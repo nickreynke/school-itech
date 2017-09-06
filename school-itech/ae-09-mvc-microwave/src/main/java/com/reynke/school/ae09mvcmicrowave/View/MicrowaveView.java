@@ -22,8 +22,6 @@ public class MicrowaveView extends JFrame {
     private JButton tubeButton;
     private JButton lampButton;
 
-    private Timer timer;
-
     private MicrowaveController microwaveController;
     private Microwave microwave;
 
@@ -116,11 +114,4 @@ public class MicrowaveView extends JFrame {
         return lampButton;
     }
 
-    public Timer getTimer() {
-        return timer;
-    }
-
-    public void setTimer(Timer timer) {
-        this.timer = timer;
-    }
 }

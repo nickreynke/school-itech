@@ -13,20 +13,19 @@ import java.awt.event.ActionListener;
  */
 public class MicrowaveController implements ActionListener {
 
+    private Timer microwaveTimer;
+
+    private Timer microwaveInfoTimer;
+    private int currentTimeLeftInSeconds;
+
     private Microwave microwave;
     private MicrowaveView microwaveView;
 
-    private Timer infoTimer;
-    private int currentTimeLeftInSeconds;
-
     public MicrowaveController() {
-
+        this.microwaveTimer = new Timer(1000, this);
+        this.microwaveInfoTimer = new Timer(1000, this);
         this.microwave = new Microwave();
-
         this.microwaveView = new MicrowaveView(this, this.microwave);
-        this.microwaveView.setTimer(new Timer(6000, this));
-
-        this.infoTimer = new Timer(1000, this);
         this.resetCurrentTimeLeft();
     }
 
@@ -35,26 +34,31 @@ public class MicrowaveController implements ActionListener {
 
         Object source = e.getSource();
 
-        if (source.equals(this.infoTimer)) {
-            this.lowerInfoTimer();
-            return;
-        }
-
+        // Action to perform when `enter` is pressed while in text field.
         if (source.equals(this.microwaveView.getTimerFormattedTextField())) {
             this.setTimerDelay();
             return;
         }
 
-        if (source.equals(this.microwaveView.getTimer())) {
+        // Action to perform after every step of the microwave info timer.
+        if (source.equals(this.microwaveInfoTimer)) {
+            this.lowerCurrentTimeLeft();
+            return;
+        }
+
+        // Action to perform after the microwave timer rans out.
+        if (source.equals(this.microwaveTimer)) {
             this.stopTimer();
             return;
         }
 
+        // Action to perform when the start button is pressed.
         if (source.equals(this.microwaveView.getStartButton())) {
             this.startMicrowave();
             return;
         }
 
+        // Action to perform when the door button is pressed.
         if (source.equals(this.microwaveView.getDoorButton())) {
 
             if (this.microwave.isDoorOpen()) {
@@ -67,10 +71,13 @@ public class MicrowaveController implements ActionListener {
 
     }
 
+    /**
+     * Sets a new microwave timer and resets the microwave info timer.
+     */
     public void setTimerDelay() {
 
-        if (this.microwaveView.getTimer().isRunning()) {
-            this.info("Can not set new timer delay while the microwave is running.");
+        if (this.microwaveTimer.isRunning()) {
+            this.info("Can not set new microwaveTimer delay while the microwave is running.");
             return;
         }
 
@@ -82,20 +89,20 @@ public class MicrowaveController implements ActionListener {
             return;
         }
 
-        this.microwaveView.getTimer().setDelay(timeInSeconds * 1000);
-        this.microwaveView.getTimer().setInitialDelay(timeInSeconds * 1000);
+        this.microwaveTimer.setDelay(timeInSeconds * 1000);
+        this.microwaveTimer.setInitialDelay(timeInSeconds * 1000);
 
         this.resetCurrentTimeLeft();
 
         this.info("Timer delay set to " + timeInSeconds + " " + (timeInSeconds == 1 ? "second" : "seconds") + ".");
     }
 
-    public void stopTimer() {
+    protected void stopTimer() {
 
         this.info("Timer stopping ...");
 
-        this.microwaveView.getTimer().stop();
-        this.infoTimer.stop();
+        this.stopMicrowaveTimer();
+        this.stopMicrowaveInfoTimer();
         this.resetCurrentTimeLeft();
 
         this.info("Timer stopped. Bing!");
@@ -108,7 +115,7 @@ public class MicrowaveController implements ActionListener {
 
         this.info("Microwave starting ...");
 
-        if (this.microwaveView.getTimer().isRunning()) {
+        if (this.microwaveTimer.isRunning()) {
             this.info("Microwave is already running.");
             return;
         }
@@ -121,23 +128,25 @@ public class MicrowaveController implements ActionListener {
         this.microwaveView.getLampButton().setBackground(Color.RED);
         this.microwaveView.getTubeButton().setBackground(Color.YELLOW);
 
-        this.startTimer();
+        this.startMicrowaveInfoTimer();
+        this.startMicrowaveTimer();
     }
 
-    public void startTimer() {
+    protected void startMicrowaveTimer() {
+        this.microwaveTimer.start();
+    }
 
-        if (this.microwaveView.getTimer().isRunning()) {
-            this.info("Microwave is already running.");
-            return;
-        }
+    protected void stopMicrowaveTimer() {
+        this.microwaveTimer.stop();
+    }
 
-        if (this.microwave.isDoorOpen()) {
-            this.info("Microwaves' door is open! Can not start.");
-            return;
-        }
+    protected void startMicrowaveInfoTimer() {
+        this.microwaveInfoTimer.start();
+    }
 
-        this.microwaveView.getTimer().start();
-        this.infoTimer.start();
+    protected void stopMicrowaveInfoTimer() {
+        this.microwaveInfoTimer.stop();
+        this.resetCurrentTimeLeft();
     }
 
     public void openDoor() {
@@ -146,9 +155,11 @@ public class MicrowaveController implements ActionListener {
 
         this.microwaveView.getLampButton().setBackground(Color.RED);
         this.microwaveView.getTubeButton().setBackground(Color.GREEN);
-        this.microwaveView.getTimer().stop();
-        this.infoTimer.stop();
+
+        this.stopMicrowaveTimer();
+        this.stopMicrowaveInfoTimer();
         this.resetCurrentTimeLeft();
+
         this.microwave.setDoorOpen(true);
         this.microwaveView.getDoorButton().setText("Close Door");
 
@@ -166,13 +177,13 @@ public class MicrowaveController implements ActionListener {
         this.info("Door closed.");
     }
 
-    protected void lowerInfoTimer() {
+    protected void lowerCurrentTimeLeft() {
         this.currentTimeLeftInSeconds -= 1;
         this.info(currentTimeLeftInSeconds + " " + (currentTimeLeftInSeconds == 1 ? "second" : "seconds") + " remaining ...");
     }
 
     protected void resetCurrentTimeLeft() {
-        this.currentTimeLeftInSeconds = this.microwaveView.getTimer().getInitialDelay() / 1000;
+        this.currentTimeLeftInSeconds = this.microwaveTimer.getInitialDelay() / 1000;
     }
 
     protected void info(String infoText) {
