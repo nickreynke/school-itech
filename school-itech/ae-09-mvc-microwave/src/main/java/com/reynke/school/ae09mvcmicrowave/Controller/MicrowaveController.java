@@ -54,6 +54,12 @@ public class MicrowaveController implements ActionListener {
 
         // Action to perform when the start button is pressed.
         if (source.equals(this.microwaveView.getStartButton())) {
+
+            if (this.microwaveTimer.isRunning()) {
+                this.stopMicrowave();
+                return;
+            }
+
             this.startMicrowave();
             return;
         }
@@ -109,6 +115,8 @@ public class MicrowaveController implements ActionListener {
 
         this.microwaveView.getTubeButton().setBackground(Color.GREEN);
         this.microwaveView.getLampButton().setBackground(Color.WHITE);
+
+        this.microwaveView.getStartButton().setText("Start");
     }
 
     public void startMicrowave() {
@@ -128,20 +136,24 @@ public class MicrowaveController implements ActionListener {
         this.microwaveView.getLampButton().setBackground(Color.RED);
         this.microwaveView.getTubeButton().setBackground(Color.YELLOW);
 
+        this.microwaveView.getStartButton().setText("Stop");
+
         this.startMicrowaveInfoTimer();
         this.startMicrowaveTimer();
+    }
+
+    public void stopMicrowave() {
+        this.stopTimer();
     }
 
     public void openDoor() {
 
         this.info("Door is opening ...");
 
+        this.stopMicrowave();
+
         this.microwaveView.getLampButton().setBackground(Color.RED);
         this.microwaveView.getTubeButton().setBackground(Color.GREEN);
-
-        this.stopMicrowaveTimer();
-        this.stopMicrowaveInfoTimer();
-        this.resetCurrentTimeLeft();
 
         this.microwave.setDoorOpen(true);
         this.microwaveView.getDoorButton().setText("Close Door");
