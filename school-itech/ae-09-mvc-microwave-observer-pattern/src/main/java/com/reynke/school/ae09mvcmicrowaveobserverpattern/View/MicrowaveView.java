@@ -174,7 +174,7 @@ public class MicrowaveView extends JFrame implements Observer {
         if (microwave.isDoorOpen()) {
             this.getLampButton().setBackground(Color.RED);
         } else {
-            this.getLampButton().setBackground(microwave.getMicrowaveLamp().getColor());
+            this.getLampButton().setBackground(microwave.getLampColor());
         }
     }
 

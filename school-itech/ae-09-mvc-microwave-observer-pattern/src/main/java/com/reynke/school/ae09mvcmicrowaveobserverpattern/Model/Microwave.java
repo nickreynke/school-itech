@@ -1,5 +1,6 @@
 package com.reynke.school.ae09mvcmicrowaveobserverpattern.Model;
 
+import java.awt.*;
 import java.util.Observable;
 
 /**
@@ -12,10 +13,11 @@ public class Microwave extends Observable {
     private boolean running = false;
     private boolean doorOpen = false;
     private boolean tubeOn = false;
-    private MicrowaveLamp microwaveLamp;
+    private boolean lampOn = false;
+    private Color lampColor;
 
     public Microwave() {
-        this.microwaveLamp = new MicrowaveLamp();
+        this.lampColor = new Color(0);
     }
 
     public int getTimeInSeconds() {
@@ -23,8 +25,12 @@ public class Microwave extends Observable {
     }
 
     public void setTimeInSeconds(int timeInSeconds) {
+
+        if (this.timeInSeconds != timeInSeconds) {
+            this.setChanged();
+        }
+
         this.timeInSeconds = timeInSeconds;
-        this.setChanged();
     }
 
     public int getTimeRemainingInSeconds() {
@@ -32,8 +38,12 @@ public class Microwave extends Observable {
     }
 
     public void setTimeRemainingInSeconds(int timeRemainingInSeconds) {
+
+        if (this.timeRemainingInSeconds != timeRemainingInSeconds) {
+            this.setChanged();
+        }
+
         this.timeRemainingInSeconds = timeRemainingInSeconds;
-        this.setChanged();
     }
 
     public boolean isRunning() {
@@ -41,8 +51,12 @@ public class Microwave extends Observable {
     }
 
     public void setRunning(boolean running) {
+
+        if (this.running != running) {
+            this.setChanged();
+        }
+
         this.running = running;
-        this.setChanged();
     }
 
     public boolean isDoorOpen() {
@@ -50,8 +64,12 @@ public class Microwave extends Observable {
     }
 
     public void setDoorOpen(boolean doorOpen) {
+
+        if (this.doorOpen != doorOpen) {
+            this.setChanged();
+        }
+
         this.doorOpen = doorOpen;
-        this.setChanged();
     }
 
     public boolean isTubeOn() {
@@ -59,17 +77,38 @@ public class Microwave extends Observable {
     }
 
     public void setTubeOn(boolean tubeOn) {
+
+        if (this.tubeOn != tubeOn) {
+            this.setChanged();
+        }
+
         this.tubeOn = tubeOn;
-        this.setChanged();
     }
 
-    public MicrowaveLamp getMicrowaveLamp() {
-        return microwaveLamp;
+    public boolean isLampOn() {
+        return lampOn;
     }
 
-    public void setMicrowaveLamp(MicrowaveLamp microwaveLamp) {
-        this.microwaveLamp = microwaveLamp;
-        this.setChanged();
+    public void setLampOn(boolean lampOn) {
+
+        if (this.lampOn != lampOn) {
+            this.setChanged();
+        }
+
+        this.lampOn = lampOn;
+    }
+
+    public Color getLampColor() {
+        return lampColor;
+    }
+
+    public void setLampColor(Color lampColor) {
+
+        if (!this.lampColor.equals(lampColor)) {
+            this.setChanged();
+        }
+
+        this.lampColor = lampColor;
     }
 
 }
