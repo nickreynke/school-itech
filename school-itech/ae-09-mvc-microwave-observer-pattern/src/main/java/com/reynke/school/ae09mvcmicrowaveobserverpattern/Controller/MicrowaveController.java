@@ -16,7 +16,6 @@ public class MicrowaveController implements ActionListener {
     private MicrowaveView microwaveView;
 
     private Timer timer;
-    private int timerSecondsLeft;
 
     public MicrowaveController() {
         this.microwave = new Microwave();
@@ -61,23 +60,71 @@ public class MicrowaveController implements ActionListener {
     }
 
     public void closeDoorAction() {
-        // @TODO Implement.
-        System.out.println("Close door");
+
+        if (!this.microwave.isDoorOpen()) {
+            this.microwave.setLastInfoText("Couldn't close door of the microwave because it is already closed");
+            this.microwave.notifyObservers(MicrowaveView.ERROR);
+            return;
+        }
+
+        this.microwave.setDoorOpen(false);
+        this.microwave.setLastInfoText("Door closed");
+        this.microwave.notifyObservers(MicrowaveView.ACTION_DOOR_CLOSED);
     }
 
     public void openDoorAction() {
-        // @TODO Implement.
-        System.out.println("Open door");
+
+        if (this.microwave.isDoorOpen()) {
+            this.microwave.setLastInfoText("Couldn't open door of the microwave because it is already opened");
+            this.microwave.notifyObservers(MicrowaveView.ERROR);
+            return;
+        }
+
+        if (this.microwave.isRunning()) {
+            // @TODO Stop timer.
+        }
+
+        this.microwave.setDoorOpen(true);
+        this.microwave.setLastInfoText("Door opened");
+        this.microwave.notifyObservers(MicrowaveView.ACTION_DOOR_OPENED);
     }
 
     public void stopAction() {
-        // @TODO Implement.
-        System.out.println("Stop microwave");
+
+        if (!this.microwave.isRunning()) {
+            this.microwave.setLastInfoText("Microwave couldn't stop because it isn't running");
+            this.microwave.notifyObservers(MicrowaveView.ERROR);
+            return;
+        }
+
+        // @TODO Stop timer.
+
+        this.microwave.setRunning(false);
+        this.microwave.setTubeOn(false);
+        this.microwave.setLastInfoText("Microwave stopped");
+        this.microwave.notifyObservers(MicrowaveView.ACTION_MICROWAVE_STOPPED);
     }
 
     public void startAction() {
-        // @TODO Implement.
-        System.out.println("Start microwave");
+
+        if (this.microwave.isRunning()) {
+            this.microwave.setLastInfoText("Microwave is already running");
+            this.microwave.notifyObservers(MicrowaveView.ERROR);
+            return;
+        }
+
+        if (this.microwave.isDoorOpen()) {
+            this.microwave.setLastInfoText("Microwave can't start while the door is open");
+            this.microwave.notifyObservers(MicrowaveView.ERROR);
+            return;
+        }
+
+        // @TODO Start timer.
+
+        this.microwave.setRunning(true);
+        this.microwave.setTubeOn(true);
+        this.microwave.setLastInfoText("Microwave started");
+        this.microwave.notifyObservers(MicrowaveView.ACTION_MICROWAVE_STARTED);
     }
 
     public void changeTimerTimeAction() {

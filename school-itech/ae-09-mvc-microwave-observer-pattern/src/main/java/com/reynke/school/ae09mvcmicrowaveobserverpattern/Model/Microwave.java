@@ -10,6 +10,7 @@ public class Microwave extends Observable {
 
     private int timeInSeconds = 0;
     private int timeRemainingInSeconds = 0;
+    private String lastInfoText = "";
     private boolean running = false;
     private boolean doorOpen = false;
     private boolean tubeOn = false;
@@ -44,6 +45,15 @@ public class Microwave extends Observable {
         }
 
         this.timeRemainingInSeconds = timeRemainingInSeconds;
+    }
+
+    public String getLastInfoText() {
+        return lastInfoText;
+    }
+
+    public void setLastInfoText(String lastInfoText) {
+        this.lastInfoText = lastInfoText;
+        this.setChanged();
     }
 
     public boolean isRunning() {

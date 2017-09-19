@@ -14,6 +14,12 @@ import java.util.Observer;
  */
 public class MicrowaveView extends JFrame implements Observer {
 
+    public static final int ACTION_DOOR_OPENED = 0;
+    public static final int ACTION_DOOR_CLOSED = 1;
+    public static final int ACTION_MICROWAVE_STARTED = 2;
+    public static final int ACTION_MICROWAVE_STOPPED = 3;
+    public static final int ERROR = 4;
+
     private MicrowaveController microwaveController;
 
     private JPanel mainPanel;
@@ -112,6 +118,7 @@ public class MicrowaveView extends JFrame implements Observer {
     protected JButton buildLampButton() {
 
         JButton lampButton = new JButton();
+        lampButton.setBackground(null);
         lampButton.setText("Lamp");
         lampButton.setOpaque(true);
         lampButton.setBorderPainted(false);
@@ -145,14 +152,6 @@ public class MicrowaveView extends JFrame implements Observer {
         return doorButton;
     }
 
-    public JButton getTubeButton() {
-        return tubeButton;
-    }
-
-    public JButton getLampButton() {
-        return lampButton;
-    }
-
     @Override
     public void update(Observable o, Object arg) {
 
@@ -163,18 +162,59 @@ public class MicrowaveView extends JFrame implements Observer {
             ));
         }
 
-        Microwave microwave = (Microwave) o;
-
-        if (microwave.isTubeOn()) {
-            this.getTubeButton().setBackground(Color.GREEN);
-        } else {
-            this.getTubeButton().setBackground(null);
+        if (!(arg instanceof Integer)) {
+            throw new RuntimeException(String.format(
+                    "Second argument, passed to `update` method of observer `%s`, is not an instance of `%s`.",
+                    this.getClass(),
+                    String.class
+            ));
         }
 
-        if (microwave.isDoorOpen()) {
-            this.getLampButton().setBackground(Color.RED);
-        } else {
-            this.getLampButton().setBackground(microwave.getLampColor());
+        Microwave microwave = (Microwave) o;
+        Integer argument = (Integer) arg;
+
+        switch (argument) {
+
+            case ERROR:
+
+                this.infoTextPane.setText(microwave.getLastInfoText());
+                return;
+
+            case ACTION_DOOR_OPENED:
+
+                this.tubeButton.setBackground(Color.GREEN);
+                this.lampButton.setBackground(Color.YELLOW);
+                this.doorButton.setText("Close door");
+                this.infoTextPane.setText(microwave.getLastInfoText());
+
+                break;
+
+            case ACTION_DOOR_CLOSED:
+
+                this.tubeButton.setBackground(Color.GREEN);
+                this.lampButton.setBackground(null);
+                this.doorButton.setText("Open door");
+                this.infoTextPane.setText(microwave.getLastInfoText());
+
+                break;
+
+            case ACTION_MICROWAVE_STOPPED:
+
+                this.tubeButton.setBackground(Color.GREEN);
+                this.lampButton.setBackground(null);
+                this.startButton.setText("Start");
+                this.infoTextPane.setText(microwave.getLastInfoText());
+
+                break;
+
+            case ACTION_MICROWAVE_STARTED:
+
+                this.tubeButton.setBackground(Color.RED);
+                this.lampButton.setBackground(Color.YELLOW);
+                this.startButton.setText("Stop");
+                this.infoTextPane.setText(microwave.getLastInfoText());
+
+                break;
         }
     }
 
